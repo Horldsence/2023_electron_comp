@@ -22,14 +22,16 @@ while True:
     cv2.imshow("gray_image", doted_image)
     cv2.waitKey(1)
     for Point in point_list:
-        if red_point_calc != ():
+        if red_point_calc != () and green_point_calc != ():
             if mtProc.calculate_distance(Point, red_point_calc) <= mtProc.calculate_distance(Point, green_point_calc):
                 redPoint = Point
                 cv2.circle(img, redPoint, 25, (256, 0, 0), 3)
-        if green_point_calc != ():
-            if mtProc.calculate_distance(Point, red_point_calc) >= mtProc.calculate_distance(Point, green_point_calc):
+            else:
                 greenPoint = Point
                 cv2.circle(img, greenPoint, 25, (0, 256, 0), 3)
+        else:
+            redPoint = Point
+            cv2.circle(img, redPoint, 25, (256, 0, 0), 3)
     cv2.imshow("result_image", img)
     print("Green Points (x, y, diameter):", green_points)
     print("Red Points (x, y, diameter):", red_points)

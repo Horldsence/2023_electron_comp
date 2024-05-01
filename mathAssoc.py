@@ -17,9 +17,9 @@ class mathProc:
             centroid_x = sum(x_coords) / len(points)
             centroid_y = sum(y_coords) / len(points)
             centroid_z = sum(z_coords) / len(points)
+            return (centroid_x, centroid_y, centroid_z)
         except:
             print("ZeroDivisionError: division by zero")
-        return (centroid_x, centroid_y, centroid_z)
 
     # 点集合质心坐标计算
     def calculate_centroid(self, points):
