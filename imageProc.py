@@ -57,7 +57,7 @@ class imageProcessor:
 
         return image, small_green_points, small_red_points
 
-    def find_bright_spots(image):
+    def find_bright_spots(self, image):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
         # 应用阈值，只保留亮度在220到255范围内的亮点
