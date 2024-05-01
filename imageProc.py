@@ -1,7 +1,5 @@
 import cv2
 import numpy as np
-import measure
-import imutils
 
 # 定义红色和绿色在HSV色彩空间的范围
 lower_green = np.array([40, 70, 50])
@@ -59,38 +57,31 @@ class imageProcessor:
 
         return image, small_green_points, small_red_points
 
-    def find_blink_points(self, image, min_area = 50):
-        # 颜色转化模糊处理
-        grayImg = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        blurredImg = cv2.GaussianBlur(grayImg, (11, 11), 0)
-        thresh = cv2.threshold(blurredImg, 230, 255, cv2.THRESH_BINARY)[1]
-        # 膨胀腐蚀去除小斑点
-        thresh = cv2.erode(thresh, None, iterations=2)
-        thresh = cv2.dilate(thresh, None, iterations=4)
-        # 连接组件分析
-        labels = measure.label(thresh, neighbors=8, background=0)
-        mask = np.zeros(thresh.shape, dtype="uint8")
-        for label in np.unique(labels):
-        # if this is the background label, ignore it
-            if label == 0:
-                continue
-            labelMask = np.zeros(thresh.shape, dtype="uint8")
-            labelMask[labels == label] = 255
-            numPixels = cv2.countNonZero(labelMask)
-            if numPixels > 300:
-                mask = cv2.add(mask, labelMask)
-        cv2.imshow('mask',mask)
-        cv2.waitKey(0)
+    def detect_bright_spots(image, threshold_value=220, min_area=10, show_result=False):
+        # 使用阈值命令将亮点转换为白色，其他所有内容转换为黑色
+        _, thresh = cv2.threshold(image, threshold_value, 255, cv2.THRESH_BINARY)
+
+        # 用于清除小斑点或孔的形态学操作
+        kernel = np.ones((3, 3), np.uint8)
+        opened = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
+
         # 查找亮点的轮廓
-        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        contours_lst, _ = cv2.findContours(opened, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
         # 筛选出具有较小面积的亮点轮廓
-        bright_spots = [cnt for cnt in contours if cv2.contourArea(cnt) > min_area]
+        bright_spots = [cnt for cnt in contours_lst if cv2.contourArea(cnt) > min_area]
 
-        cnts = imutils.grab_contours(cnts)
-        cnts = contours.sort_contours(cnts)[0]
-        for (i, c) in enumerate(cnts):
-            (x, y, w, h) = cv2.boundingRect(c)
-            ((cX, cY), radius) = cv2.minEnclosingCircle(c)
-        cv2.circle(image, (int(cX), int(cY)), int(radius),
-            (0, 0, 255), 3)
+        # 可视化结果
+        if show_result:
+            result_image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+            for (i, c) in enumerate(bright_spots):
+                # 计算外接圆
+                ((cX, cY), radius) = cv2.minEnclosingCircle(c)
+                # 画出最小外接圆
+                cv2.circle(result_image, (int(cX), int(cY)), int(radius), (0, 0, 255), 3)
+                # 画出圆心
+                cv2.circle(result_image, (int(cX), int(cY)), 5, (255, 0, 0), -1)
+
+        # 返回亮点中心坐标
+        bright_spot_centers = [(int(cv2.minEnclosingCircle(c)[0][0]), int(cv2.minEnclosingCircle(c)[0][1])) for c in bright_spots]
+        return result_image, bright_spot_centers
