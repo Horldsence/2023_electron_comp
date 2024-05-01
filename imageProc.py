@@ -82,6 +82,8 @@ class imageProcessor:
                 # 画出圆心
                 cv2.circle(result_image, (int(cX), int(cY)), 5, (255, 0, 0), -1)
 
+        bright_spot_centers = []
         # 返回亮点中心坐标
-        bright_spot_centers = [(int(cv2.minEnclosingCircle(c)[0][0]), int(cv2.minEnclosingCircle(c)[0][1])) for c in bright_spots]
+        for c in bright_spots:
+            bright_spot_centers.append((int(cv2.minEnclosingCircle(c)[0][0]), int(cv2.minEnclosingCircle(c)[0][1])))
         return result_image, bright_spot_centers
