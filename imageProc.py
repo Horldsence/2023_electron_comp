@@ -57,33 +57,29 @@ class imageProcessor:
 
         return image, small_green_points, small_red_points
 
-    def detect_bright_spots(image, threshold_value=220, min_area=10, show_result=False):
-        # 使用阈值命令将亮点转换为白色，其他所有内容转换为黑色
-        _, thresh = cv2.threshold(image, threshold_value, 255, cv2.THRESH_BINARY)
+    def find_bright_spots(image):
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-        # 用于清除小斑点或孔的形态学操作
-        kernel = np.ones((3, 3), np.uint8)
-        opened = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
+        # 应用阈值，只保留亮度在220到255范围内的亮点
+        _, thresholded = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY)
 
-        # 查找亮点的轮廓
-        contours_lst, _ = cv2.findContours(opened, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # 形态学操作
+        thresh = cv2.erode(thresholded, None, iterations=2)
+        thresholded = cv2.dilate(thresh, None, iterations=4)
 
-        # 筛选出具有较小面积的亮点轮廓
-        bright_spots = [cnt for cnt in contours_lst if cv2.contourArea(cnt) > min_area]
+        # 找到亮点的轮廓
+        contours, _ = cv2.findContours(thresholded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-        # 可视化结果
-        if show_result:
-            result_image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-            for (i, c) in enumerate(bright_spots):
-                # 计算外接圆
-                ((cX, cY), radius) = cv2.minEnclosingCircle(c)
-                # 画出最小外接圆
-                cv2.circle(result_image, (int(cX), int(cY)), int(radius), (0, 0, 255), 3)
-                # 画出圆心
-                cv2.circle(result_image, (int(cX), int(cY)), 5, (255, 0, 0), -1)
-
-        bright_spot_centers = []
-        # 返回亮点中心坐标
-        for c in bright_spots:
-            bright_spot_centers.append((int(cv2.minEnclosingCircle(c)[0][0]), int(cv2.minEnclosingCircle(c)[0][1])))
-        return result_image, bright_spot_centers
+        centers = []  # 存储中心坐标的列表
+        for contour in contours:
+            # 计算轮廓的矩
+            M = cv2.moments(contour)
+            if M["m00"] != 0:
+                # 计算中心坐标
+                cX = int(M["m10"] / M["m00"])
+                cY = int(M["m01"] / M["m00"])
+                centers.append((cX, cY))
+                # 在原图上标注中心点
+                cv2.circle(image, (cX, cY), 5, (0, 0, 255), -1)
+        # 返回标注后的图像和中心点坐标列表
+        return image, centers

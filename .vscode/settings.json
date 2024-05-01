@@ -1,7 +1,11 @@
 {
     "cSpell.words": [
+        "cnts",
         "dtype",
         "Imget",
-        "imutils"
+        "imread",
+        "imutils",
+        "skimage",
+        "thresholded"
     ]
 }

@@ -6,7 +6,11 @@ def find_bright_spots(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # 应用阈值，只保留亮度在220到255范围内的亮点
-    _, thresholded = cv2.threshold(gray, 220, 255, cv2.THRESH_BINARY)
+    _, thresholded = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY)
+
+    # 形态学操作
+    thresh = cv2.erode(thresholded, None, iterations=2)
+    thresholded = cv2.dilate(thresh, None, iterations=4)
 
     # 找到亮点的轮廓
     contours, _ = cv2.findContours(thresholded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -24,11 +28,12 @@ def find_bright_spots(image):
             cv2.circle(image, (cX, cY), 5, (0, 0, 255), -1)
     # 返回标注后的图像和中心点坐标列表
     return image, centers
+
 getImg = Imget()
 while True:
   image = getImg.getImg()
   # 使用函数
-  marked_image, bright_spots_centers = find_bright_spots("your_image.jpg")
+  marked_image, bright_spots_centers = find_bright_spots(image)
 
   # 显示图像
   cv2.imshow("Marked Image", marked_image)
