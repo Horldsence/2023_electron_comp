@@ -83,3 +83,4 @@ class imageProcessor:
                 cv2.circle(image, (cX, cY), 5, (0, 0, 255), -1)
         # 返回标注后的图像和中心点坐标列表
         return image, centers
+
