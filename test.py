@@ -1,46 +1,34 @@
-import serial
-import time
+import cv2 as cv
+from picam import Imget
 
-# 配置串口参数
-ser = serial.Serial(
-    port='/dev/ttyAMA10',    # 树莓派的串口设备，需要根据你的设置进行更改
-    baudrate=9600,          # 配置波特率，和你的单片机保持一致
-    parity=serial.PARITY_NONE,
-    stopbits=serial.STOPBITS_ONE,
-    bytesize=serial.EIGHTBITS,
-    timeout=1               # 读取超时时间
-)
+getIm = Imget()
 
-# 发送数据
-def send_data(data):
-    ser.write(data)
+def canny(img):
+    # read in our original image as grayscale
+    img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
-# 接收数据
-def receive_data():
-    while True:
-        if ser.in_waiting:
-            data = ser.read(ser.in_waiting)
-            return data
+    # show grayscale image using our helper function
+    cv.imshow("Grayscale Image", img)
 
-# 主函数
-def main():
-    try:
-        while True:
-            # 例子：发送 "Hello" 到单片机
-            send_data(b'Hello\n')
-            
-            # 等待一段时间
-            time.sleep(1)
-            
-            # 例子：接收来自单片机的数据
-            incoming_data = receive_data()
-            if incoming_data:
-                print("Received:", incoming_data)
-            
-            # 延时
-            time.sleep(1)
-    except KeyboardInterrupt:
-        ser.close()
+    # blurring the image with a 5x5, sigma = 1 Guassian kernel
+    img_blur = cv.GaussianBlur(img, (5, 5), 1)
 
-if __name__ == '__main__':
-    main()
+    # obtaining a horizontal and vertical Sobel filtering of the image
+    img_sobelx = cv.Sobel(img_blur, cv.CV_64F, 1, 0, ksize=3)
+    img_sobely = cv.Sobel(img_blur, cv.CV_64F, 0, 1, ksize=3)
+
+    # image with both horizontal and vertical Sobel kernels applied
+    img_sobelxy = cv.addWeighted(cv.convertScaleAbs(img_sobelx), 0.5, cv.convertScaleAbs(img_sobely), 0.5, 0)
+
+    # finally, generate canny edges
+    # extreme examples: high threshold [900, 1000]; low threshold [1, 10]
+    img_edges = cv.Canny(img, 90, 100)
+
+    return img_edges
+
+while True:
+    img = getIm.getImg()
+    cv.imshow("Original image", img)
+    proc_img = canny(img)
+    cv.imshow("canny", proc_img)
+    cv.waitKey(1)

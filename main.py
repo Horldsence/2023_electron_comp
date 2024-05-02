@@ -44,6 +44,6 @@ if __name__ == "__main__":
         print("Green Points (x, y, diameter):", green_points)
         print("Red Points (x, y, diameter):", red_points)
         rectangle_img, rectangles = imProc.find_rectangles(img)
-        cv2.imshow("rectangle_img", doted_image)
+        cv2.imshow("rectangle_img", rectangle_img)
         print(rectangles)
         cv2.waitKey(3)
