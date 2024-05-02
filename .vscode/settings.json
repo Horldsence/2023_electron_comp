@@ -1,11 +1,16 @@
 {
     "cSpell.words": [
+        "arctan",
         "cnts",
         "dtype",
         "Imget",
         "imread",
         "imutils",
+        "ksize",
+        "neighbour",
         "skimage",
+        "sobelx",
+        "sobely",
         "thresholded"
     ]
 }

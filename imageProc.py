@@ -19,6 +19,7 @@ class imageProcessor:
     def find_small_points(self, image, max_aspect_ratio = 1.5):
         # 读取和转换图像
         hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        # cv2.equalizeHist(hsv_image, hsv_image)
 
         # 在HSV空间里面根据定义的范围查找绿色和红色
         green_mask = cv2.inRange(hsv_image, lower_green, upper_green)
@@ -59,13 +60,15 @@ class imageProcessor:
 
     def find_bright_spots(self, image):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+        gray_img = clahe.apply(gray)
 
         # 应用阈值，只保留亮度在220到255范围内的亮点
-        _, thresholded = cv2.threshold(gray, 240, 255, cv2.THRESH_BINARY)
+        _, thresholded = cv2.threshold(gray_img, 240, 255, cv2.THRESH_BINARY)
 
         # 形态学操作
-        thresh = cv2.erode(thresholded, None, iterations=2)
-        thresholded = cv2.dilate(thresh, None, iterations=4)
+        # thresh = cv2.erode(thresholded, None, iterations=2)
+        # thresholded = cv2.dilate(thresh, None, iterations=4)
 
         # 找到亮点的轮廓
         contours, _ = cv2.findContours(thresholded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)

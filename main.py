@@ -10,6 +10,8 @@ mtProc = mathProc()
 
 if __name__ == "__main__":
     while True:
+        redFlag = False
+        greenFlag = False
         img = getImg.getImg()
         gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         proc_image, green_points, red_points = imProc.find_small_points(img)
@@ -20,16 +22,23 @@ if __name__ == "__main__":
         cv2.imshow("new_img", proc_image)
         cv2.imshow("gray_image", gray_image)
         cv2.imshow("gray_image", doted_image)
+        point_num = len(point_list)
         for Point in point_list:
             if red_point_calc != () and green_point_calc != ():
-                if mtProc.calculate_distance(Point, red_point_calc) <= mtProc.calculate_distance(Point, green_point_calc):
+                if redFlag == False and mtProc.calculate_distance(Point, red_point_calc) <= mtProc.calculate_distance(Point, green_point_calc) and mtProc.calculate_distance(Point, red_point_calc) <= 20:
                     redPoint = Point
+                    # redFlag = True
                     cv2.circle(img, redPoint, 25, (256, 0, 0), 3)
-                else:
+                elif greenFlag == False:
                     greenPoint = Point
                     cv2.circle(img, greenPoint, 25, (0, 256, 0), 3)
+                # else:
+                #     print("error!")
+                #     print(point_list + "\n" + red_points + "\n" + green_points)
+                #     break
             else:
-                redPoint = Point
+                if redFlag == False:
+                    redPoint = Point
                 cv2.circle(img, redPoint, 25, (256, 0, 0), 3)
         cv2.imshow("result_image", img)
         print("Green Points (x, y, diameter):", green_points)
@@ -37,4 +46,4 @@ if __name__ == "__main__":
         rectangle_img, rectangles = imProc.find_rectangles(img)
         cv2.imshow("rectangle_img", doted_image)
         print(rectangles)
-        cv2.waitKey(1)
+        cv2.waitKey(3)

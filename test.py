@@ -1,46 +1,46 @@
-from picam import Imget
-import cv2
-import numpy as np
+import serial
+import time
 
-getImg = Imget()
+# 配置串口参数
+ser = serial.Serial(
+    port='/dev/ttyAMA10',    # 树莓派的串口设备，需要根据你的设置进行更改
+    baudrate=9600,          # 配置波特率，和你的单片机保持一致
+    parity=serial.PARITY_NONE,
+    stopbits=serial.STOPBITS_ONE,
+    bytesize=serial.EIGHTBITS,
+    timeout=1               # 读取超时时间
+)
 
-#定义形状检测函数
-def ShapeDetection(img):
-    contours,hierarchy = cv2.findContours(img,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)  #寻找轮廓点
-    for obj in contours:
-        area = cv2.contourArea(obj)  #计算轮廓内区域的面积
-        cv2.drawContours(imgContour, obj, -1, (255, 0, 0), 4)  #绘制轮廓线
-        perimeter = cv2.arcLength(obj,True)  #计算轮廓周长
-        approx = cv2.approxPolyDP(obj,0.02*perimeter,True)  #获取轮廓角点坐标
-        CornerNum = len(approx)   #轮廓角点的数量
-        x, y, w, h = cv2.boundingRect(approx)  #获取坐标值和宽度、高度
+# 发送数据
+def send_data(data):
+    ser.write(data)
 
-        #轮廓对象分类
-        if CornerNum ==3: objType ="triangle"
-        elif CornerNum == 4:
-            if w==h: objType= "Square"
-            else:objType="Rectangle"
-        elif CornerNum>4: objType= "Circle"
-        else:objType="N"
+# 接收数据
+def receive_data():
+    while True:
+        if ser.in_waiting:
+            data = ser.read(ser.in_waiting)
+            return data
 
-        cv2.rectangle(imgContour,(x,y),(x+w,y+h),(0,0,255),2)  #绘制边界框
-        cv2.putText(imgContour,objType,(x+(w//2),y+(h//2)),cv2.FONT_HERSHEY_COMPLEX,0.6,(0,0,0),1)  #绘制文字
+# 主函数
+def main():
+    try:
+        while True:
+            # 例子：发送 "Hello" 到单片机
+            send_data(b'Hello\n')
+            
+            # 等待一段时间
+            time.sleep(1)
+            
+            # 例子：接收来自单片机的数据
+            incoming_data = receive_data()
+            if incoming_data:
+                print("Received:", incoming_data)
+            
+            # 延时
+            time.sleep(1)
+    except KeyboardInterrupt:
+        ser.close()
 
-# canny 算子边缘检测
-while True:
-    img = getImg.getImg()
-    imgContour = img.copy()
-
-    imgGray = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)  #转灰度图
-    imgBlur = cv2.GaussianBlur(imgGray,(5,5),1)  #高斯模糊
-    imgCanny = cv2.Canny(imgBlur,60,60)  #Canny算子边缘检测
-    ShapeDetection(imgCanny)  #形状检测
-
-    cv2.imshow("Original img", img)
-    cv2.imshow("imgGray", imgGray)
-    cv2.imshow("imgBlur", imgBlur)
-    cv2.imshow("imgCanny", imgCanny)
-    cv2.imshow("shape Detection", imgContour)
-
-    cv2.waitKey(1)
-
+if __name__ == '__main__':
+    main()
