@@ -1,9 +1,9 @@
 import cv2
 from picam import Imget
 import numpy as np
-from imageProc import imageProcessor
-from CannyProc import RectangleDetector
-from mathAssoc import mathProc
+from procFunction.imageProc import imageProcessor
+from procFunction.CannyProc import RectangleDetector
+from procFunction.mathAssoc import mathProc
 
 getImg = Imget()
 imProc = imageProcessor()
