@@ -86,28 +86,3 @@ class imageProcessor:
                 cv2.circle(image, (cX, cY), 5, (0, 0, 255), -1)
         # 返回标注后的图像和中心点坐标列表
         return image, centers
-
-    def find_rectangles(self, img):
-        rectangles = []
-        imgContour = img.copy()
-        imgGray = cv2.cvtColor(img,cv2.COLOR_RGB2GRAY)  #转灰度图
-        imgBlur = cv2.GaussianBlur(imgGray,(5,5),1)  #高斯模糊
-        imgCanny = cv2.Canny(imgBlur,60,60)  #Canny算子边缘检测
-
-        #寻找轮廓点
-        contours,hierarchy = cv2.findContours(imgCanny,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_NONE)
-
-        for obj in contours:
-            area = cv2.contourArea(obj)  #计算轮廓内区域的面积
-            cv2.drawContours(imgContour, obj, -1, (255, 0, 0), 4)  #绘制轮廓线
-            perimeter = cv2.arcLength(obj,True)  #计算轮廓周长
-            approx = cv2.approxPolyDP(obj,0.02*perimeter,True)  #获取轮廓角点坐标
-            CornerNum = len(approx)   #轮廓角点的数量
-            x, y, w, h = cv2.boundingRect(approx)  #获取坐标值和宽度、高度
-
-            #轮廓对象分类
-            if CornerNum == 4 and w != h:
-                #绘制边界框
-                cv2.rectangle(imgContour,(x,y),(x+w,y+h),(0,0,255),2)
-                rectangles.append(approx)
-        return imgContour, rectangles
