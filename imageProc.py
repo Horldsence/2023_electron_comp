@@ -64,7 +64,7 @@ class imageProcessor:
         gray_img = clahe.apply(gray)
 
         # 应用阈值，只保留亮度在220到255范围内的亮点
-        _, thresholded = cv2.threshold(gray_img, 240, 255, cv2.THRESH_BINARY)
+        _, thresholded = cv2.threshold(gray_img, 235, 255, cv2.THRESH_BINARY)
 
         # 形态学操作
         # thresh = cv2.erode(thresholded, None, iterations=2)
