@@ -1,9 +1,9 @@
 import cv2
-from picam import Imget
+from basicFunc.picam import Imget
 import numpy as np
-from procFunction.imageProc import imageProcessor
-from procFunction.CannyProc import RectangleDetector
-from procFunction.mathAssoc import mathProc
+from procFunc.imageProc import imageProcessor
+from procFunc.CannyProc import RectangleDetector
+from procFunc.mathAssoc import mathProc
 
 getImg = Imget()
 imProc = imageProcessor()
@@ -14,6 +14,7 @@ if __name__ == "__main__":
     redPoint = (0, 0)
     greenPoint = (0, 0)
     Point = (0, 0)
+    previousRedPoint = (0, 0)
     while True:
         img = getImg.getImg()
         originalImg = img.copy()
@@ -43,7 +44,10 @@ if __name__ == "__main__":
                     greenPoint = Point
         else:
             if len(point_list) == 0:
-                redPoint = [int(x) for x in red_point_calc]
+                if red_point_calc != () and red_point_calc != (0, 0):
+                    redPoint = [int(x) for x in red_point_calc]
+                else:
+                    redPoint = previousRedPoint
             else:
                 redPoint = Point
         try:
@@ -51,6 +55,7 @@ if __name__ == "__main__":
             cv2.circle(img, greenPoint, 25, (0, 255, 0), 3)
         except cv2.error:
             print("there is no point")
+        previousRedPoint = redPoint
         cv2.imshow("result_image", img)
         print("Green Points (x, y):", greenPoint)
         print("Red Points (x, y):", redPoint)

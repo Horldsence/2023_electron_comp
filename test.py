@@ -1,5 +1,5 @@
 import cv2 as cv
-from picam import Imget
+from basicFunc.picam import Imget
 
 getIm = Imget()
 
