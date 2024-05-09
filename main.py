@@ -10,7 +10,7 @@ getImg = Imget()
 imProc = imageProcessor()
 mtProc = mathProc()
 rectangleFinder = RectangleDetector(3, 5)
-detector = yolov5Detector('best.pt')
+detector = yolov5Detector('/home/horld/文档/2023_electron_comp/best.pt')
 
 if __name__ == "__main__":
     redPoint = (0, 0)

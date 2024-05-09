@@ -5,7 +5,7 @@ from PIL import Image, ImageDraw, ImageFont
 class yolov5Detector:
     def __init__(self, weights_path: str, device: str = 'cpu'):
         self.device = device
-        self.model = torch.hub.load('ultralytics/yolov5', 'yolov5s', path=weights_path).to(device)
+        self.model = torch.hub.load('/home/horld/yolov5', 'yolov5s', path=weights_path).to(device)
         self.model.eval()
 
     def detect(self, image, conf_thres=0.25, iou_thres=0.45):
