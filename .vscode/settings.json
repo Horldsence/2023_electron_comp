@@ -5,12 +5,26 @@
         "dtype",
         "Imget",
         "imread",
+        "imshow",
         "imutils",
         "ksize",
+        "libcamera",
         "neighbour",
+        "picam",
+        "picamera",
+        "Picamera",
         "skimage",
         "sobelx",
         "sobely",
-        "thresholded"
-    ]
+        "thres",
+        "thresholded",
+        "torchvision",
+        "ultralytics",
+        "yolov"
+    ],
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#18331F",
+        "titleBar.activeBackground": "#21472B",
+        "titleBar.activeForeground": "#F6FBF7"
+    }
 }

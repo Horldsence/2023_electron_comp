@@ -4,11 +4,13 @@ import numpy as np
 from procFunc.imageProc import imageProcessor
 from procFunc.CannyProc import RectangleDetector
 from procFunc.mathAssoc import mathProc
+from procFunc.yoloProc import yolov5Detector
 
 getImg = Imget()
 imProc = imageProcessor()
 mtProc = mathProc()
 rectangleFinder = RectangleDetector(3, 5)
+detector = yolov5Detector('')
 
 if __name__ == "__main__":
     redPoint = (0, 0)
