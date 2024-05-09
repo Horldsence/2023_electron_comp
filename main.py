@@ -10,7 +10,7 @@ getImg = Imget()
 imProc = imageProcessor()
 mtProc = mathProc()
 rectangleFinder = RectangleDetector(3, 5)
-detector = yolov5Detector('')
+detector = yolov5Detector('best.pt')
 
 if __name__ == "__main__":
     redPoint = (0, 0)
@@ -31,6 +31,9 @@ if __name__ == "__main__":
         # cv2.imshow("new_img", proc_image)
         # cv2.imshow("gray_image", gray_image)
         cv2.imshow("doted_image", doted_image)
+        result = detector.detect(img)
+        img_prediction = detector.drawPredictions(img, result)
+        cv2.imshow("predict image", img_prediction)
 
         # 红绿点识别区分
         point_num = len(point_list)

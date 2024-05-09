@@ -20,6 +20,7 @@
         "thresholded",
         "torchvision",
         "ultralytics",
+        "yoloProc",
         "yolov"
     ],
     "workbench.colorCustomizations": {

@@ -1,6 +1,6 @@
 import torch
-from pathlib import Path
-from torchvision import nms
+from torchvision.ops import nms
+from PIL import Image, ImageDraw, ImageFont
 
 class yolov5Detector:
     def __init__(self, weights_path: str, device: str = 'cpu'):
@@ -34,3 +34,16 @@ class yolov5Detector:
             detections.append((class_id, score, bbox))
 
         return detections
+
+    def drawPredictions(self, image, detections, line_thickness=3):
+        draw = ImageDraw.Draw(image)
+        font = ImageFont.load_default()
+
+        for det in detections:
+            class_id, confidence, bbox = det
+            x1, y1, x2, y2 = bbox
+            label = f"{class_id}({confidence:.2f})"
+            draw.rectangle([x1, y1, x2, y2], outline='red',width=line_thickness)
+            draw.text((x1, y1), label, fill="white", font=font)
+
+        return image
