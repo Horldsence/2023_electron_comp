@@ -31,3 +31,11 @@ class mathProc:
             return (centroid_x, centroid_y)
         except ZeroDivisionError:
             return ()
+
+    def getCircleCenter(box):
+        x, y = 0
+        for point in box:
+            x = x + point[0]
+            y = y + point[1]
+        # 点坐标， 半径
+        return [(x/2, y/2), x/2-x]

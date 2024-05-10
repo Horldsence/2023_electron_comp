@@ -15,6 +15,7 @@
         "picamera",
         "Picamera",
         "skimage",
+        "Sobel",
         "sobelx",
         "sobely",
         "thres",

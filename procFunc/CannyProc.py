@@ -10,6 +10,8 @@ class calcProc:
         :param gradient_magnitude: 梯度幅度图
         :param gradient_direction: 梯度方向图
         :return: 经过非极大值抑制的边缘图
+        好消息: torch里面附赠了一个 😊
+        from torchvision.ops import nms
         """
         # 获取图像维度
         M, N = gradient_magnitude.shape
