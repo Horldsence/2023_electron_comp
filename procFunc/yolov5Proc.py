@@ -1,10 +1,11 @@
 import torch
 from basicFunc.yoloLibrary import DetectMultiBackend,LoadImages,Annotator,non_max_suppression,scale_coords,colors
 import cv2
+from basicFunc.picam import Imget
 import numpy as np
 import base64
 device = torch.device('cpu')
-model = DetectMultiBackend("flaskshi/date/best.pt", device=device, dnn=False)
+model = DetectMultiBackend("yoloModel/best.pt", device=device, dnn=False)
 if model.pt:
     model.model.float()
 print("模型加载完成")
@@ -36,7 +37,8 @@ def detect_img(img0): #预测
         im0 = annotator.result()
         return data,im0
 
-img = cv2.imread('flaskshi/a1.jpg')
+getImg = Imget()
+img = getImg.getImg()
 
 # img0 = cv2.imdecode(img)
 count,im0 = detect_img(img)
@@ -45,8 +47,8 @@ print(count)
 image = cv2.imencode('.jpg',im0)[1]
 img = str(base64.b64encode(image))[2:-1]
 # cv2.imshow('a1',img1)
-with open('flaskshi/path/ai.jpg','wb') as f:
-        f.write(base64.b64decode(img))
-img1 = cv2.imread('flaskshi/path/ai.jpg',1)
-cv2.imshow('a1',img1)        
+# with open('flaskshi/path/ai.jpg','wb') as f:
+#         f.write(base64.b64decode(img))
+# img1 = cv2.imread('flaskshi/path/ai.jpg',1)
+cv2.imshow('a1',im0)
 cv2.waitKey(0)
