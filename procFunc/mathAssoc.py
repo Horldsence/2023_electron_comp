@@ -32,10 +32,23 @@ class mathProc:
         except ZeroDivisionError:
             return ()
 
-    def getCircleCenter(box):
+    def getCircleCenter(self, box):
         x, y = 0
         for point in box:
             x = x + point[0]
             y = y + point[1]
         # 点坐标， 半径
         return [(x/2, y/2), x/2-x]
+
+    def calcDotCenter(self, xyxy_list):
+        try:
+            x_coords = [xyxy_list[0], xyxy_list[2]]
+            y_coords = [xyxy_list[1], xyxy_list[3]]
+        except IndexError:
+            return ()
+        try:
+            center_x = int(sum(x_coords) / 2)
+            center_y = int(sum(y_coords) / 2)
+            return (center_x, center_y)
+        except ZeroDivisionError:
+            return ()

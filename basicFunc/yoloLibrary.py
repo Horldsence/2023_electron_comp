@@ -50,7 +50,7 @@ def attempt_load(weights, map_location=None, inplace=True, fuse=True):
         return model  # return ensemble
 
 class DetectMultiBackend(nn.Module):
-    def __init__(self, weights='yolov5s.pt', device=torch.device('cpu'), dnn=False, data=None, fp16=False):
+    def __init__(self, weights='yolov5n.pt', device=torch.device('cpu'), dnn=False, data=None, fp16=False):
         super().__init__()
         w = str(weights[0] if isinstance(weights, list) else weights)
         pt, jit, onnx, engine = self.model_type(w)  # get backend

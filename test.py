@@ -5,7 +5,7 @@ from basicFunc.picam import Imget
 import numpy as np
 import base64
 device = torch.device('cpu')
-model = DetectMultiBackend("yoloModel/best.pt", device=device, dnn=False)
+model = DetectMultiBackend("yoloModel/best-small.pt", device=device, dnn=False)
 if model.pt:
     model.model.float()
 print("模型加载完成")
@@ -36,6 +36,7 @@ def detect_img(img0): #预测
                     data[names[c]] = 1
                 label = (f'{names[c][0]}{data[names[c]]}')
                 annotator.box_label(xyxy, label, color=colors(c, True))  #对图片进行标注，就是画框
+                print(xyxy)
 
         im0 = annotator.result()
         return data,im0
