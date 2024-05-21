@@ -1,10 +1,6 @@
 import torch
 from procFunc.mathAssoc import mathProc
 from basicFunc.yoloLibrary import DetectMultiBackend,LoadImages,Annotator,non_max_suppression,scale_coords,colors
-import cv2
-from basicFunc.picam import Imget
-import numpy as np
-import base64
 mtProc = mathProc()
 # yolo模型加载
 device = torch.device('cpu')
