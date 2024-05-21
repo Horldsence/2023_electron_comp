@@ -21,18 +21,10 @@ if __name__ == "__main__":
         originalImg = img.copy()
 
         # 数据获取及图像预处理
-        # gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        # proc_image, green_points, red_points = imProc.find_small_points(img)
-        # doted_image, point_list = imProc.find_bright_spots(img)
-        # red_point_calc = mtProc.calculate_centroid(red_points)
-        # green_point_calc = mtProc.calculate_centroid(green_points)
         cv2.imshow("original_image", img)
-        # cv2.imshow("new_img", proc_image)
-        # cv2.imshow("gray_image", gray_image)
         count, im0, centerPointList = detect_img(img)
         cv2.imshow("doted_image", im0)
         print(centerPointList)
-        # cv2.imshow("predict image", img_prediction)
 
         # 寻找长方形
         rectangle_img, rectangles = rectangleFinder.find_rectangles(originalImg)
