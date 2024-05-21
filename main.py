@@ -5,6 +5,10 @@ from procFunc.imageProc import imageProcessor
 from procFunc.CannyProc import RectangleDetector
 from procFunc.mathAssoc import mathProc
 from procFunc.yolov5Proc import detect_img
+from basicFunc.onnxLibrary import ObjectDetector
+
+detector = ObjectDetector('model.onnx')
+
 
 getImg = Imget()
 imProc = imageProcessor()
@@ -31,3 +35,9 @@ if __name__ == "__main__":
         cv2.imshow("rectangle_img", rectangle_img)
         print(rectangles)
         cv2.waitKey(3)
+
+        # 使用nanodet模型检测
+        raw_result = detector.run_onnx_model(img)
+        boxes, scores, classes = detector.apply_nms(raw_result)
+        image, centers = detector.draw_boxes_and_centers(image, boxes, classes)
+        cv2.imshow("nanodet_image", image)
