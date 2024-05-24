@@ -7,7 +7,7 @@ from procFunc.mathAssoc import mathProc
 from procFunc.yolov5Proc import detect_img
 from basicFunc.onnxLibrary import ObjectDetector
 
-detector = ObjectDetector('yoloModel')
+detector = ObjectDetector('nanodetModel/nanodet_m.onnx')
 
 
 getImg = Imget()
