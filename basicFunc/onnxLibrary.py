@@ -9,6 +9,10 @@ class ObjectDetector:
         self.input_name = self.session.get_inputs()[0].name
 
     def run_onnx_model(self, image):
+        # Resize the image to 320x320
+        image = cv2.resize(image, (320, 320))
+        # Convert the image to float
+        image = image.astype(np.float32)
         raw_result = self.session.run(None, {self.input_name: image})
         return raw_result
 
